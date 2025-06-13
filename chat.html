@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Web Analyzer - Chat</title>
+  <style>
+    /* Animations */
+    @keyframes slideFadeInLeft {
+      0% { opacity: 0; transform: translateX(-30px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes slideFadeInRight {
+      0% { opacity: 0; transform: translateX(30px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes messageFadeIn {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #0d1b2a, #1b263b);
+      display: flex;
+      height: 100vh;
+      color: #e0e8f0;
+      transition: all 0.3s ease;
+    }
+
+    /* Left panel */
+    .left-container {
+      width: 70%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      box-sizing: border-box;
+      animation: slideFadeInLeft 0.6s ease forwards;
+    }
+
+    .iframe-wrapper {
+      width: 100%;
+      height: 90vh;
+      background-color: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+    }
+
+    .iframe-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 20px;
+    }
+
+    /* Right panel */
+    .right {
+      width: 30%;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 20px;
+      background-color: #1e293b;
+      box-shadow: -2px 0 15px rgba(0, 0, 0, 0.05);
+      animation: slideFadeInRight 0.6s ease forwards;
+      border-left: 1px solid #2d3e50;
+    }
+
+    .webpage-info {
+      background-color: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 15px;
+      font-size: 12px;
+    }
+
+    .webpage-info h4 {
+      margin: 0 0 8px 0;
+      color: #3b82f6;
+      font-size: 13px;
+    }
+
+    .webpage-info p {
+      margin: 4px 0;
+      color: #cbd5e1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .new-chat {
+      align-self: flex-end;
+      margin-bottom: 15px;
+    }
+
+    .new-chat a {
+      text-decoration: none;
+      color: #fff;
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 13px;
+      box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+    }
+
+    .chat-box {
+      flex: 1;
+      overflow-y: auto;
+      border: 1px solid #334155;
+      padding: 14px;
+      border-radius: 10px;
+      background-color: #0f172a;
+      margin-bottom: 16px;
+      font-size: 14px;
+      line-height: 1.4;
+      box-shadow: inset 0 0 8px #1e293b;
+    }
+
+    .message {
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      animation: messageFadeIn 0.4s ease forwards;
+      opacity: 0;
+    }
+
+    .message.user {
+      background-color: #2563eb;
+      color: white;
+      text-align: right;
+    }
+
+    .message.bot {
+      background-color: #334155;
+      color: #e2e8f0;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 10px;
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 12px 14px;
+      font-size: 14px;
+      border: 1.5px solid #475569;
+      border-radius: 6px;
+      background-color: #1e293b;
+      color: #f8fafc;
+      outline: none;
+    }
+
+    .input-area button {
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .chat-box::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-box::-webkit-scrollbar-thumb {
+      background-color: #64748b;
+      border-radius: 4px;
+    }
+
+    .suggestion-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .suggestion-btn {
+      background-color: #1e40af;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    /* LIGHT THEME */
+    body.light-theme {
+      background: linear-gradient(to right, #f8fafc, #e2e8f0);
+      color: #1e293b;
+    }
+
+    body.light-theme .right {
+      background-color: #f1f5f9;
+      border-left: 1px solid #cbd5e1;
+    }
+
+    body.light-theme .chat-box {
+      background-color: #e2e8f0;
+      box-shadow: inset 0 0 8px #cbd5e1;
+    }
+
+    body.light-theme .message.bot {
+      background-color: #cbd5e1;
+      color: #0f172a;
+    }
+
+    body.light-theme .input-area input {
+      background-color: #ffffff;
+      color: #0f172a;
+      border-color: #94a3b8;
+    }
+
+    body.light-theme .webpage-info {
+      background-color: #ffffff;
+      color: #0f172a;
+      border-color: #cbd5e1;
+    }
+
+    /* Toggle Theme Button */
+    #themeToggleBtn {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 1000;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #1e40af);
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="left-container">
+    <div class="iframe-wrapper">
+      <iframe src="{{ url }}" id="webpageFrame"></iframe>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="webpage-info">
+      <h4>📄 Current Webpage</h4>
+      {% if webpage_info %}
+        <p><strong>Title:</strong> {{ webpage_info.title[:50] }}...</p>
+        <p><strong>URL:</strong> {{ webpage_info.url[:40] }}...</p>
+      {% else %}
+        <p><strong>URL:</strong> {{ url[:40] }}...</p>
+      {% endif %}
+      <p><strong>User:</strong> {{ session.logged_in_user }}</p>
+    </div>
+
+    <div class="new-chat">
+      <a href="/new-chat">New Chat</a>
+    </div>
+
+    <div class="suggestion-buttons">
+      <button class="suggestion-btn" onclick="askSuggestion('What is this page about?')">What is this about?</button>
+      <button class="suggestion-btn" onclick="askSuggestion('Summarize this page')">Summarize</button>
+      <button class="suggestion-btn" onclick="askSuggestion('What are the main points?')">Key Points</button>
+      <button class="suggestion-btn" onclick="askSuggestion('Explain this in simple terms')">Explain Simply</button>
+    </div>
+
+    <div class="chat-box" id="chatBox" aria-live="polite">
+      <div class="message bot" style="opacity: 1;">
+        <strong>Assistant:</strong> Hi! I can help you understand and analyze the webpage you're currently viewing.
+      </div>
+    </div>
+
+    <div class="input-area">
+      <input type="text" id="userInput" placeholder="Ask about this webpage..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <!-- Toggle Button -->
+  <button id="themeToggleBtn">🌙</button>
+
+  <script>
+    let messageCount = 0;
+
+    function appendMessage(sender, text, cls) {
+      const chatBox = document.getElementById('chatBox');
+      const msg = document.createElement('div');
+      msg.className = `message ${cls}`;
+      msg.innerHTML = `<strong>${sender}:</strong> ${text}`;
+      msg.style.animationDelay = `${messageCount * 0.1}s`;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+      setTimeout(() => { msg.style.opacity = '1'; }, messageCount * 100);
+      messageCount++;
+      return msg;
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('userInput');
+      const message = input.value.trim();
+      if (!message) return;
+      if (message.startsWith('http://') || message.startsWith('https://')) {
+        alert("⚠️ URLs are not allowed in chat.");
+        return;
+      }
+
+      appendMessage('You', message, 'user');
+      input.value = '';
+      const typingIndicator = appendMessage('Assistant', '💭 Analyzing...', 'bot');
+
+      try {
+        const res = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message })
+        });
+        const data = await res.json();
+        typingIndicator.remove();
+        appendMessage('Assistant', data.reply, 'bot');
+      } catch {
+        typingIndicator.remove();
+        appendMessage('Assistant', 'Sorry, I encountered an error.', 'bot');
+      }
+    }
+
+    function askSuggestion(question) {
+      document.getElementById('userInput').value = question;
+      sendMessage();
+    }
+
+    document.getElementById('userInput').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    // Theme toggle logic
+    const toggleBtn = document.getElementById('themeToggleBtn');
+    const body = document.body;
+
+    function updateThemeIcon(isLight) {
+      toggleBtn.textContent = isLight ? '☀️' : '🌙';
+    }
+
+    if (localStorage.getItem('theme') === 'light') {
+      body.classList.add('light-theme');
+      updateThemeIcon(true);
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      body.classList.toggle('light-theme');
+      const isLight = body.classList.contains('light-theme');
+      updateThemeIcon(isLight);
+      if (isLight) localStorage.setItem('theme', 'light');
+      else localStorage.removeItem('theme');
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+

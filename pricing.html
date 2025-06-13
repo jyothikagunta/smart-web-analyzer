@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pricing – Smart Webpage Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #1a202c;
+      --bg-secondary: #2d3748;
+      --bg-card: #374151;
+      --text-primary: #ffffff;
+      --text-secondary: #e2e8f0;
+      --text-muted: #a0aec0;
+      --accent-blue: #4299e1;
+      --accent-cyan: #0bc5ea;
+      --heading-color: #63b3ed;
+      --code-bg: #2d3748;
+      --border-color: #4a5568;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --navbar-bg: #1a202c;
+      --highlight: #64b5f6;
+      --footer-bg: rgba(0, 0, 0, 0.2);
+      --card-bg: #3c4557;
+      --card-border: rgba(255, 255, 255, 0.1);
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7fafc;
+      --bg-card: #ffffff;
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --text-muted: #718096;
+      --accent-blue: #3182ce;
+      --accent-cyan: #0987a0;
+      --heading-color: #2b6cb0;
+      --code-bg: #f7fafc;
+      --border-color: #e2e8f0;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      --navbar-bg: #ffffff;
+      --highlight: #2196f3;
+      --footer-bg: rgba(0, 0, 0, 0.05);
+      --card-bg: #ffffff;
+      --card-border: rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      transition: all 0.3s ease;
+      font-size: 16px;
+      min-height: 100vh;
+    }
+
+    /* Navigation - Matching reference exactly */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--navbar-bg);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 1000;
+      transition: all 0.3s ease;
+      height: 70px;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 2.5rem;
+      align-items: center;
+      margin: 0;
+    }
+
+    .nav-links li {
+      margin: 0;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1rem;
+      transition: color 0.2s ease;
+      padding: 0.5rem 0;
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-links a.active {
+      color: var(--accent-blue);
+    }
+
+    .theme-toggle {
+      background: transparent;
+      border: none;
+      border-radius: 50%;
+      padding: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      margin-left: 1rem;
+    }
+
+    .theme-toggle:hover {
+      background: var(--bg-secondary);
+      transform: scale(1.1);
+    }
+
+    .theme-icon {
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-top: 70px;
+      padding: 3rem 2rem;
+      min-height: calc(100vh - 70px);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3.0rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    .container > p {
+      font-size: 1.2rem;
+      margin-bottom: 4rem;
+      opacity: 0.8;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      color: var(--text-secondary);
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin: 4rem 0;
+    }
+
+    .feature-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      text-align: left;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .feature-box:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      border-color: rgba(100, 181, 246, 0.3);
+    }
+
+    [data-theme="light"] .feature-box:hover {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #64b5f6, #42a5f5, #2196f3);
+    }
+
+    .feature-box[data-icon="✨"]::before {
+      background: linear-gradient(90deg, #4caf50, #66bb6a);
+    }
+
+    .feature-box[data-icon="🚀"]::before {
+      background: linear-gradient(90deg, #ff9800, #ffb74d);
+    }
+
+    .feature-box[data-icon="🏢"]::before {
+      background: linear-gradient(90deg, #9c27b0, #ba68c8);
+    }
+
+    .feature-box b {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .feature-box > p {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      opacity: 0.8;
+      color: var(--text-secondary);
+    }
+
+    .feature-box ul {
+      list-style: none;
+      margin: 2rem 0;
+      padding: 0;
+    }
+
+    .feature-box li {
+      margin: 1rem 0;
+      font-size: 1rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .feature-box i {
+      font-style: normal;
+      display: block;
+      margin-top: 2rem;
+      text-align: center;
+      color: var(--highlight);
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 0.75rem 1.5rem;
+      background: rgba(100, 181, 246, 0.1);
+      border-radius: 12px;
+      border: 1px solid rgba(100, 181, 246, 0.2);
+    }
+
+    /* Icon styling for each plan */
+    .feature-box[data-icon="✨"] {
+      position: relative;
+    }
+
+    .feature-box[data-icon="✨"]::after {
+      content: '✨';
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      font-size: 2rem;
+      opacity: 0.6;
+    }
+
+    .feature-box[data-icon="🚀"]::after {
+      content: '🚀';
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      font-size: 2rem;
+      opacity: 0.6;
+    }
+
+    .feature-box[data-icon="🏢"]::after {
+      content: '🏢';
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      font-size: 2rem;
+      opacity: 0.6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: var(--footer-bg);
+      margin-top: 3rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    footer b {
+      color: #ff69b4;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .nav-container {
+        padding: 0 1rem;
+      }
+
+      .main-content {
+        padding: 2rem 1rem;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+      }
+      
+      .container {
+        padding: 2rem 1rem;
+      }
+      
+      .features {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .feature-box {
+        padding: 2rem 1.5rem;
+      }
+
+      .feature-box::after {
+        top: 1.5rem;
+        right: 1.5rem;
+        font-size: 1.5rem;
+      }
+    }
+
+    /* Subtle animations */
+    .feature-box {
+      animation: fadeInUp 0.6s ease-out forwards;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .feature-box:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .feature-box:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .feature-box:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Light theme specific adjustments */
+    [data-theme="light"] .navbar {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    [data-theme="light"] .theme-toggle:hover {
+      background: #f7fafc;
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="#" class="logo">Web Analyzer</a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/pricing" class="active">Pricing</a></li>
+        <li><a href="/features">Features</a></li>
+        <li><a href="/documentation">Documentation</a></li>
+        <li>
+          <button class="theme-toggle" id="themeToggle">
+            <span class="theme-icon" id="themeIcon">🌙</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <div class="container">
+      <h1>Flexible Gemini-Based Plans</h1>
+      <p>Choose the plan that suits your usage and team size. All powered by Google's Gemini AI for powerful analysis.</p>
+
+      <div class="features">
+        <div class="feature-box" data-icon="✨">
+          <b>Free Plan – ₹0/month</b>
+          <p>Perfect for casual users and students exploring Gemini capabilities.</p>
+          <ul>
+            <li>🔹 5 questions/day</li>
+            <li>🔹 Gemini Lite access</li>
+            <li>🔹 Community support</li>
+          </ul>
+          <i>No credit card needed</i>
+        </div>
+
+        <div class="feature-box" data-icon="🚀">
+          <b>Pro Plan – ₹499/month</b>
+          <p>For individual professionals and power users who need consistent access.</p>
+          <ul>
+            <li>✅ Unlimited questions</li>
+            <li>✅ Gemini Pro access</li>
+            <li>✅ Priority support</li>
+          </ul>
+          <i>Best for freelancers</i>
+        </div>
+
+        <div class="feature-box" data-icon="🏢">
+          <b>Enterprise – Custom Pricing</b>
+          <p>Advanced integration, team collaboration, and tailored AI solutions.</p>
+          <ul>
+            <li>💼 Team dashboards</li>
+            <li>💼 Gemini API integration</li>
+            <li>💼 24/7 premium support</li>
+          </ul>
+          <i>Talk to our team for a quote</i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <b>© 2025 with 💜 by Jyothika</b>
+  </footer>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const body = document.body;
+
+    // Check for saved theme preference or default to dark
+    const currentTheme = localStorage.getItem('theme') || 'dark';
+    body.setAttribute('data-theme', currentTheme);
+    updateThemeIcon(currentTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    });
+
+    function updateThemeIcon(theme) {
+      themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+    }
+  </script>
+</body>
+</html>

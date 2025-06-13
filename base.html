@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}My App{% endblock %}</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* Light Theme */
+    body.light-theme {
+      background-color: #f9fafb;
+      color: #111827;
+    }
+
+    /* Dark Theme */
+    body.dark-theme {
+      background-color: #0f172a;
+      color: #e2e8f0;
+    }
+
+    #themeToggleBtn {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 1000;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #1e40af;
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transition: background 0.3s ease;
+    }
+
+    #themeToggleBtn:hover {
+      background-color: #3b82f6;
+    }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body class="dark-theme">
+  <!-- Theme Toggle Button -->
+  <button id="themeToggleBtn" onclick="toggleTheme()">🌙</button>
+
+  {% block content %}{% endblock %}
+
+  <script>
+    // Load theme from localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      document.body.className = savedTheme;
+      document.getElementById('themeToggleBtn').textContent = savedTheme === 'light-theme' ? '☀️' : '🌙';
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      const isLight = body.classList.toggle('light-theme');
+      const isDark = !isLight;
+      if (isLight) {
+        body.classList.remove('dark-theme');
+        localStorage.setItem('theme', 'light-theme');
+        document.getElementById('themeToggleBtn').textContent = '☀️';
+      } else {
+        body.classList.add('dark-theme');
+        localStorage.setItem('theme', 'dark-theme');
+        document.getElementById('themeToggleBtn').textContent = '🌙';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>Documentation – Smart Webpage Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --bg-primary: #1a202c;
+    --bg-secondary: #2d3748;
+    --bg-card: #374151;
+    --text-primary: #ffffff;
+    --text-secondary: #e2e8f0;
+    --text-muted: #a0aec0;
+    --accent-blue: #4299e1;
+    --accent-cyan: #0bc5ea;
+    --heading-color: #63b3ed;
+    --code-bg: #2d3748;
+    --border-color: #4a5568;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --navbar-bg: #1a202c;
+  }
+
+  [data-theme="light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f7fafc;
+    --bg-card: #ffffff;
+    --text-primary: #2d3748;
+    --text-secondary: #4a5568;
+    --text-muted: #718096;
+    --accent-blue: #3182ce;
+    --accent-cyan: #0987a0;
+    --heading-color: #2b6cb0;
+    --code-bg: #f7fafc;
+    --border-color: #e2e8f0;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    --navbar-bg: #ffffff;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    transition: all 0.3s ease;
+    font-size: 16px;
+  }
+
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--navbar-bg);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    height: 70px;
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 3rem 0 2rem; /* Increased right padding */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: -0.5px;
+  }
+
+  .nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2.5rem;
+  align-items: center;
+  margin: 0;
+  margin-left: auto; /* push links to right */
+  padding-right: 2rem; /* add spacing like your other pages */
+}
+
+
+  .nav-links li {
+    margin: 0;
+  }
+
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: color 0.2s ease;
+    padding: 0.5rem 0;
+  }
+
+  .nav-links a:hover {
+    color: var(--text-primary);
+  }
+
+  .theme-toggle {
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-left: 1rem;
+  }
+
+  .theme-toggle:hover {
+    background: var(--bg-secondary);
+    transform: scale(1.1);
+  }
+
+  .theme-icon {
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+  }
+
+  .main-content {
+    margin-top: 70px;
+    padding: 3rem 2rem;
+    min-height: calc(100vh - 70px);
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 3rem;
+    background: var(--bg-card);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+  }
+
+  h2 {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--accent-blue);
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  h2:first-of-type {
+    margin-top: 0;
+  }
+
+  p, li {
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-top: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  ul {
+    padding-left: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  ul li {
+    margin-bottom: 0.75rem;
+    position: relative;
+  }
+
+  ul li::marker {
+    color: var(--accent-cyan);
+  }
+
+  ol {
+    padding-left: 1.5rem;
+    margin-top: 1rem;
+    counter-reset: step-counter;
+  }
+
+  ol li {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--accent-blue);
+    list-style: none;
+    counter-increment: step-counter;
+    position: relative;
+    margin-left: -1.5rem;
+    padding-left: 3.5rem;
+  }
+
+  ol li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--accent-blue);
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  pre {
+    background-color: var(--code-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    border: 1px solid var(--border-color);
+    position: relative;
+    margin: 1rem 0;
+  }
+
+  code {
+    background-color: var(--code-bg);
+    color: var(--accent-cyan);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.9em;
+    border: 1px solid var(--border-color);
+  }
+
+  pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--text-primary);
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 2rem 0;
+    opacity: 0.6;
+  }
+
+  strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  h2:contains("Features") + ul li,
+  h2[id*="features"] + ul li {
+    background: var(--bg-secondary);
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+    border-left: 3px solid var(--accent-cyan);
+    transition: all 0.3s ease;
+    list-style: none;
+    margin-left: -1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  h2 + ul li strong {
+    color: var(--accent-blue);
+  }
+
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+    }
+
+    .nav-container {
+      padding: 0 1rem;
+    }
+
+    .main-content {
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      padding: 2rem 1.5rem;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+    }
+
+    ol li {
+      margin-left: 0;
+      padding-left: 3.5rem;
+    }
+  }
+
+  .container {
+    animation: slideUp 0.6s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .container:hover {
+    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+  }
+
+  [data-theme="light"] .container:hover {
+    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.1);
+  }
+
+  [data-theme="light"] .navbar {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  [data-theme="light"] .theme-toggle:hover {
+    background: #f7fafc;
+  }
+</style>
+
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="{{ url_for('home') }}" class="logo">Smart Analyzer</a>
+      <ul class="nav-links">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <li><a href="{{ url_for('pricing') }}">Pricing</a></li>
+        <li><a href="{{ url_for('features') }}">Features</a></li>
+        <li><a href="{{ url_for('documentation') }}">Documentation</a></li>
+      </ul>
+      <button class="theme-toggle" onclick="toggleTheme()">
+        <span class="theme-icon" id="theme-icon">🌙</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <div class="container">
+      <h1>📘 Smart Webpage Analyzer – User Guide</h1>
+      <hr>
+
+      <h2>📌 What is Smart Webpage Analyzer?</h2>
+      <p>
+        Smart Webpage Analyzer is an easy-to-use tool that lets you analyze any website by simply entering its URL. It includes a chat assistant, modern interface, and supports both light and dark themes.
+      </p>
+
+      <h2>🌟 What You Can Do</h2>
+      <ul>
+        <li>Submit a website URL to get insights and analysis</li>
+        <li>Chat with our assistant to learn about the webpage structure</li>
+        <li>Toggle between Light 🌞 and Dark 🌙 mode</li>
+        <li>Navigate across different sections easily</li>
+      </ul>
+
+      <h2>🖱️ How to Use</h2>
+      <ol>
+        <li>Go to the Home page</li>
+        <li>Paste any website URL into the input field</li>
+        <li>Click the submit button</li>
+        <li>Interact with the assistant for detailed analysis</li>
+        <li>Toggle the theme using the icon in the top-right corner</li>
+      </ol>
+
+      <h2>⚠️ Things to Know</h2>
+      <ul>
+        <li>Currently supports basic analysis only</li>
+        <li>Doesn’t store your data or chat history</li>
+      </ul>
+
+      <h2>🚀 Coming Soon</h2>
+      <ul>
+        <li>Advanced SEO & performance scoring</li>
+        <li>Exportable reports</li>
+        <li>Account-based history</li>
+      </ul>
+
+      <h2>👩‍💻 Created By</h2>
+      <p><strong>Developed by Jyothika</strong> – Dedicated to building intuitive, intelligent web tools</p>
+    </div>
+  </div>
+
+  <!-- THEME TOGGLE SCRIPT -->
+  <!-- THEME TOGGLE SCRIPT -->
+<script>
+  // Apply theme from localStorage on page load
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('theme-icon').textContent = savedTheme === 'light' ? '🌞' : '🌙';
+  }
+
+  // Toggle theme function
+  function toggleTheme() {
+    const html = document.documentElement;
+    const icon = document.getElementById('theme-icon');
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+    html.setAttribute('data-theme', newTheme);
+    icon.textContent = newTheme === 'light' ? '🌞' : '🌙';
+    localStorage.setItem('theme', newTheme);
+  }
+</script>
+
+</body>
+</html>
